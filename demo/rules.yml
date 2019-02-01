@@ -1,0 +1,49 @@
+groups:
+  - name: jenkins
+    rules:
+      - record: jenkins:job:duration:avg7d
+        expr: avg_over_time(jenkins_last_build_duration_seconds[7d])
+      - record: jenkins:deploydelta:devuat
+        expr: jenkins_custom_last_checkout_build_number{result="successful",jenkins_job="deploy-dev"} - ignoring(jenkins_job) jenkins_custom_last_checkout_build_number{result="successful",jenkins_job="deploy-uat"}
+      - record: jenkins:deploydelta:devprod 
+        expr: jenkins_custom_last_checkout_build_number{result="successful",jenkins_job="deploy-dev"} - ignoring(jenkins_job) jenkins_custom_last_checkout_build_number{result="successful",jenkins_job="deploy-prod"}
+      - record: jenkins:deploytimedelta:devuat
+        expr: jenkins_last_build_timestamp_seconds{result="successful",jenkins_job="deploy-dev"} - ignoring(jenkins_job) jenkins_last_build_timestamp_seconds{result="successful",jenkins_job="deploy-uat"}
+      - record: jenkins:deploytimedelta:devprod
+        expr: jenkins_last_build_timestamp_seconds{result="successful",jenkins_job="deploy-dev"} - ignoring(jenkins_job) jenkins_last_build_timestamp_seconds{result="successful",jenkins_job="deploy-prod"}
+      - alert: JobLongExecution
+        expr: jenkins_last_build_duration_seconds > 1.2 * jenkins:job:duration:avg7d
+        labels:
+          severity: warning
+        annotations:
+          summary: "Execution of last {{ $labels.result }} build for {{ $labels.jenkins_job }} job in folder {{ $labels.folder }} took unusually long"
+      - alert: JobShortExecution
+        expr: jenkins_last_build_duration_seconds < 0.8 * jenkins:job:duration:avg7d
+        labels:
+          severity: warning
+        annotations:
+          summary: "Last {{ $labels.result }} build for {{ $labels.jenkins_job }} job in folder {{ $labels.folder }} completed unusually quickly"
+      - alert: LongTimeSinceDeployToUAT
+        expr: jenkins:deploytimedelta:devuat > 300
+        labels:
+          severity: warning
+        annotations:
+          summary: "The build for {{ $labels.folder }} on UAT is at least 5 minutes older than the one on DEV"
+      - alert: LongTimeSinceDeployToPROD
+        expr: jenkins:deploytimedelta:devprod > 300
+        labels:
+          severity: warning
+        annotations:
+          summary: "The build for {{ $labels.folder }} on PROD is at least 5 minutes older than the one on DEV"
+      - alert: BigVersionDifferenceUAT
+        expr: jenkins:deploydelta:devuat > 3
+        labels:
+          severity: warning
+        annotations:
+          summary: "The build for {{ $labels.folder }} on UAT is at least 3 versions  older than the one on DEV"
+      - alert: BigVersionDifferencePROD
+        expr: jenkins:deploydelta:devprod > 3
+        labels:
+          severity: warning
+        annotations:
+          summary: "The build for {{ $labels.folder }} on PROD is at least 3 versions  older than the one on DEV"
