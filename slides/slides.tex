@@ -61,7 +61,7 @@
     \vspace{20pt}
     We have around 2500 jobs in or main Jenkins master \\
     \vspace{20pt}
-    \textbf{\textit{Great} if you want to DOS your Jenkins master!}
+    \textbf{\textit{Great} if you want to DoS your Jenkins master!}
   \end{center}
 \end{frame}
 
@@ -127,15 +127,10 @@ jenkins_last_build_number{folder="pipelines/puppet", jenkins_job="checkout", res
 \end{frame}
 
 \begin{frame}[fragile]{But what can I do with it?}
-  \begin{minted}[fontsize=\scriptsize,breaklines]{yaml}
- - record: jenkins:job:duration:avg7d
-   expr: avg_over_time(jenkins_last_build_duration_seconds[7d])
- - alert: JobLongExecution
-   expr: jenkins_last_build_duration_seconds > 1.2 * jenkins:job:duration:avg7d
-   labels:
-     severity: warning
-   annotations:
-     summary: "Execution of last {{ $labels.result }} build for {{ $labels.jenkins_job }} job in folder {{ $labels.folder }} took unusually long"
+  \begin{minted}[fontsize=\footnotesize,breaklines]{text}
+changes(jenkins_custom_last_checkout_build_number {result="successful",jenkins_job="deploy-prod"}[1w])
+
+changes(jenkins_custom_last_checkout_build_number {result="successful",jenkins_job="deploy-dev"}[1w])            - ignoring(jenkins_job) changes(jenkins_custom_last_checkout_build_number {result="successful",jenkins_job="deploy-prod"}[1w])
   \end{minted}
 \end{frame}
 
