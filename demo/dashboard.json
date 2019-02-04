@@ -16,7 +16,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 2,
-  "iteration": 1549050974303,
+  "iteration": 1549273030603,
   "links": [],
   "panels": [
     {
@@ -75,7 +75,16 @@
           "refId": "B"
         }
       ],
-      "thresholds": [],
+      "thresholds": [
+        {
+          "colorMode": "critical",
+          "fill": true,
+          "line": true,
+          "op": "gt",
+          "value": 3,
+          "yaxis": "left"
+        }
+      ],
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
@@ -391,7 +400,8 @@
           "alias": "/.*/",
           "fill": 0,
           "linewidth": 2
-        }
+        },
+        {}
       ],
       "spaceLength": 10,
       "stack": false,
@@ -410,9 +420,25 @@
           "intervalFactor": 1,
           "legendFormat": "PROD",
           "refId": "B"
+        },
+        {
+          "expr": "300 ",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "Threshold",
+          "refId": "C"
         }
       ],
-      "thresholds": [],
+      "thresholds": [
+        {
+          "colorMode": "critical",
+          "fill": true,
+          "line": true,
+          "op": "gt",
+          "value": 300,
+          "yaxis": "left"
+        }
+      ],
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
@@ -523,7 +549,7 @@
       "thresholds": "",
       "title": "Last deploy to DEV",
       "type": "singlestat",
-      "valueFontSize": "80%",
+      "valueFontSize": "100%",
       "valueMaps": [
         {
           "op": "=",
@@ -556,7 +582,7 @@
         "x": 16,
         "y": 7
       },
-      "id": 12,
+      "id": 18,
       "interval": null,
       "links": [],
       "mappingType": 1,
@@ -593,7 +619,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "jenkins_last_build_timestamp_seconds{folder=\"$Pipeline\", result=\"successful\", jenkins_job=\"deploy-uat\"} * 1000",
+          "expr": "jenkins_last_build_timestamp_seconds{folder=\"$Pipeline\", result=\"successful\", jenkins_job=\"deploy-dev\"} * 1000",
           "format": "time_series",
           "instant": true,
           "intervalFactor": 1,
@@ -601,9 +627,9 @@
         }
       ],
       "thresholds": "",
-      "title": "Last deploy to UAT",
+      "title": "Last deploy to DEV",
       "type": "singlestat",
-      "valueFontSize": "80%",
+      "valueFontSize": "100%",
       "valueMaps": [
         {
           "op": "=",
@@ -683,7 +709,7 @@
       "thresholds": "",
       "title": "Last deploy to PROD",
       "type": "singlestat",
-      "valueFontSize": "80%",
+      "valueFontSize": "100%",
       "valueMaps": [
         {
           "op": "=",
@@ -694,96 +720,12 @@
       "valueName": "avg"
     },
     {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "fill": 1,
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 14
-      },
-      "id": 15,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 1,
-      "links": [],
-      "nullPointMode": "null",
-      "percentage": false,
-      "pointradius": 5,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "expr": "jenkins_last_build_duration_seconds{folder=\"$Pipeline\",result=\"successful\"}",
-          "format": "time_series",
-          "intervalFactor": 1,
-          "legendFormat": "{{ jenkins_job }}",
-          "refId": "A"
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "Last job duration",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
       "columns": [],
       "fontSize": "100%",
       "gridPos": {
-        "h": 6,
-        "w": 6,
-        "x": 12,
+        "h": 7,
+        "w": 12,
+        "x": 0,
         "y": 14
       },
       "id": 17,
@@ -829,9 +771,9 @@
           "dateFormat": "YYYY-MM-DD HH:mm:ss",
           "decimals": 2,
           "mappingType": 1,
-          "pattern": "",
+          "pattern": "/^(?!alertname).*$/",
           "thresholds": [],
-          "type": "number",
+          "type": "hidden",
           "unit": "short"
         },
         {
@@ -843,27 +785,267 @@
             "rgba(50, 172, 45, 0.97)"
           ],
           "decimals": 2,
-          "pattern": "/^(?!alertname).*$/",
+          "pattern": "/.*/",
           "thresholds": [],
-          "type": "hidden",
+          "type": "number",
           "unit": "short"
         }
       ],
       "targets": [
         {
-          "expr": "ALERTS{alertstate=\"firing\",folder=\"$Pipeline\",alertname!~\"Job.*Execution\"}",
+          "expr": "ALERTS{folder=\"$Pipeline\"}",
           "format": "table",
+          "instant": true,
+          "intervalFactor": 1,
+          "legendFormat": "{{ $labels.summary }}",
+          "refId": "A"
+        }
+      ],
+      "title": "Current Alerts",
+      "transform": "table",
+      "type": "table"
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": false,
+      "colorValue": false,
+      "colors": [
+        "#299c46",
+        "rgba(237, 129, 40, 0.89)",
+        "#d44a3a"
+      ],
+      "format": "none",
+      "gauge": {
+        "maxValue": 100,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 4,
+        "x": 12,
+        "y": 14
+      },
+      "id": 12,
+      "interval": null,
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "nullPointMode": "connected",
+      "nullText": null,
+      "postfix": "",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false
+      },
+      "tableColumn": "",
+      "targets": [
+        {
+          "expr": "changes(jenkins_last_build_timestamp_seconds{folder=\"$Pipeline\", result=\"successful\", jenkins_job=\"deploy-dev\"}[24h])",
+          "format": "time_series",
           "instant": true,
           "intervalFactor": 1,
           "refId": "A"
         }
       ],
-      "title": "Active alerts",
-      "transform": "table",
-      "type": "table"
+      "thresholds": "",
+      "title": "Deploys to DEV in the last 24h",
+      "type": "singlestat",
+      "valueFontSize": "150%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }
+      ],
+      "valueName": "current"
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": false,
+      "colorValue": false,
+      "colors": [
+        "#299c46",
+        "rgba(237, 129, 40, 0.89)",
+        "#d44a3a"
+      ],
+      "format": "none",
+      "gauge": {
+        "maxValue": 100,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 4,
+        "x": 16,
+        "y": 14
+      },
+      "id": 19,
+      "interval": null,
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "nullPointMode": "connected",
+      "nullText": null,
+      "postfix": "",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false
+      },
+      "tableColumn": "",
+      "targets": [
+        {
+          "expr": "changes(jenkins_last_build_timestamp_seconds{folder=\"$Pipeline\", result=\"successful\", jenkins_job=\"deploy-uat\"}[24h])",
+          "format": "time_series",
+          "instant": true,
+          "intervalFactor": 1,
+          "refId": "A"
+        }
+      ],
+      "thresholds": "",
+      "title": "Deploys to UAT in the last 24h",
+      "type": "singlestat",
+      "valueFontSize": "150%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }
+      ],
+      "valueName": "current"
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": false,
+      "colorValue": false,
+      "colors": [
+        "#299c46",
+        "rgba(237, 129, 40, 0.89)",
+        "#d44a3a"
+      ],
+      "format": "none",
+      "gauge": {
+        "maxValue": 100,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 4,
+        "x": 20,
+        "y": 14
+      },
+      "id": 20,
+      "interval": null,
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "nullPointMode": "connected",
+      "nullText": null,
+      "postfix": "",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false
+      },
+      "tableColumn": "",
+      "targets": [
+        {
+          "expr": "changes(jenkins_last_build_timestamp_seconds{folder=\"$Pipeline\", result=\"successful\", jenkins_job=\"deploy-prod\"}[24h])",
+          "format": "time_series",
+          "instant": true,
+          "intervalFactor": 1,
+          "refId": "A"
+        }
+      ],
+      "thresholds": "",
+      "title": "Deploys to PROD in the last 24h",
+      "type": "singlestat",
+      "valueFontSize": "150%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }
+      ],
+      "valueName": "current"
     }
   ],
-  "refresh": "10s",
   "schemaVersion": 16,
   "style": "dark",
   "tags": [],
@@ -909,7 +1091,7 @@
     ]
   },
   "time": {
-    "from": "now-30m",
+    "from": "now-5m",
     "to": "now"
   },
   "timepicker": {
@@ -940,5 +1122,5 @@
   "timezone": "",
   "title": "Jenkins Pipeline Dashboard",
   "uid": "KXLRiUlmz",
-  "version": 2
+  "version": 8
 }
