@@ -128,9 +128,9 @@ jenkins_last_build_number{folder="pipelines/puppet", jenkins_job="checkout", res
 
 \begin{frame}[fragile]{But what can I do with it?}
   \begin{minted}[fontsize=\footnotesize,breaklines]{text}
-changes(jenkins_custom_last_checkout_build_number {result="successful",jenkins_job="deploy-prod"}[1w])
+changes(jenkins_last_build_number {result="successful",jenkins_job="deploy-prod"}[1w])
 
-changes(jenkins_custom_last_checkout_build_number {result="successful",jenkins_job="deploy-dev"}[1w])            - ignoring(jenkins_job) changes(jenkins_custom_last_checkout_build_number {result="successful",jenkins_job="deploy-prod"}[1w])
+changes(jenkins_last_build_number {result="successful",jenkins_job="deploy-dev"}[1w])            - ignoring(jenkins_job) changes(jenkins_last_build_number {result="successful",jenkins_job="deploy-prod"}[1w])
   \end{minted}
 \end{frame}
 
